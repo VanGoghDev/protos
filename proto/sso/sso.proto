@@ -39,8 +39,9 @@ message IsAdminResponse {
 }
 
 message VerifyMailRequest {
-    string code = 1;
-    google.protobuf.Timestamp date = 2;
+    string email = 1;
+    string code = 2;
+    google.protobuf.Timestamp date = 3;
 }
 
 message VerifyMailResponse {
