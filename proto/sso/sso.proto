@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+import "google/protobuf/timestamp.proto";
 package auth;
 
 option go_package = "./firsov.sso.v1;ssov1";
@@ -8,6 +8,7 @@ service Auth {
     rpc Register (RegisterRequest) returns (RegisterResponse);
     rpc Login (LoginRequest) returns (LoginResponse);
     rpc IsAdmin(IsAdminRequest) returns (IsAdminResponse);
+    rpc VerifyMail(VerifyMailRequest) returns (VerifyMailResponse);
 }
 
 message RegisterRequest {
@@ -35,4 +36,13 @@ message IsAdminRequest {
 
 message IsAdminResponse {
     bool is_admin = 1;
+}
+
+message VerifyMailRequest {
+    string code = 1;
+    google.protobuf.Timestamp date = 2;
+}
+
+message VerifyMailResponse {
+    string result = 1;
 }
