@@ -59,8 +59,9 @@ message VerifyMailResponse {
 }
 
 message ResetPasswordRequest {
-    string code = 1;
-    string newPassword = 2;
+    string email = 1;
+    string code = 2;
+    string newPassword = 3;
 }
 
 message ResetPasswordResponse {
