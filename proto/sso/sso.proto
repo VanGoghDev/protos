@@ -10,6 +10,7 @@ service Auth {
     rpc IsAdmin(IsAdminRequest) returns (IsAdminResponse);
     rpc CreateVerification(CreateVerificationRequest) returns (CreateVerificationResponse);
     rpc VerifyMail(VerifyMailRequest) returns (VerifyMailResponse);
+    rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
 }
 
 message RegisterRequest {
@@ -55,4 +56,13 @@ message VerifyMailRequest {
 
 message VerifyMailResponse {
     string result = 1;
+}
+
+message ResetPasswordRequest {
+    string code = 1;
+    string newPassword = 2;
+}
+
+message ResetPasswordResponse {
+    bool success = 1;
 }

@@ -24,6 +24,7 @@ const (
 	Auth_IsAdmin_FullMethodName            = "/auth.Auth/IsAdmin"
 	Auth_CreateVerification_FullMethodName = "/auth.Auth/CreateVerification"
 	Auth_VerifyMail_FullMethodName         = "/auth.Auth/VerifyMail"
+	Auth_ResetPassword_FullMethodName      = "/auth.Auth/ResetPassword"
 )
 
 // AuthClient is the client API for Auth service.
@@ -35,6 +36,7 @@ type AuthClient interface {
 	IsAdmin(ctx context.Context, in *IsAdminRequest, opts ...grpc.CallOption) (*IsAdminResponse, error)
 	CreateVerification(ctx context.Context, in *CreateVerificationRequest, opts ...grpc.CallOption) (*CreateVerificationResponse, error)
 	VerifyMail(ctx context.Context, in *VerifyMailRequest, opts ...grpc.CallOption) (*VerifyMailResponse, error)
+	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error)
 }
 
 type authClient struct {
@@ -90,6 +92,15 @@ func (c *authClient) VerifyMail(ctx context.Context, in *VerifyMailRequest, opts
 	return out, nil
 }
 
+func (c *authClient) ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error) {
+	out := new(ResetPasswordResponse)
+	err := c.cc.Invoke(ctx, Auth_ResetPassword_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServer is the server API for Auth service.
 // All implementations must embed UnimplementedAuthServer
 // for forward compatibility
@@ -99,6 +110,7 @@ type AuthServer interface {
 	IsAdmin(context.Context, *IsAdminRequest) (*IsAdminResponse, error)
 	CreateVerification(context.Context, *CreateVerificationRequest) (*CreateVerificationResponse, error)
 	VerifyMail(context.Context, *VerifyMailRequest) (*VerifyMailResponse, error)
+	ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error)
 	mustEmbedUnimplementedAuthServer()
 }
 
@@ -120,6 +132,9 @@ func (UnimplementedAuthServer) CreateVerification(context.Context, *CreateVerifi
 }
 func (UnimplementedAuthServer) VerifyMail(context.Context, *VerifyMailRequest) (*VerifyMailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyMail not implemented")
+}
+func (UnimplementedAuthServer) ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResetPassword not implemented")
 }
 func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
 
@@ -224,6 +239,24 @@ func _Auth_VerifyMail_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Auth_ResetPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResetPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServer).ResetPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Auth_ResetPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServer).ResetPassword(ctx, req.(*ResetPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Auth_ServiceDesc is the grpc.ServiceDesc for Auth service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -250,6 +283,10 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyMail",
 			Handler:    _Auth_VerifyMail_Handler,
+		},
+		{
+			MethodName: "ResetPassword",
+			Handler:    _Auth_ResetPassword_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
