@@ -8,6 +8,7 @@ service Auth {
     rpc Register (RegisterRequest) returns (RegisterResponse);
     rpc Login (LoginRequest) returns (LoginResponse);
     rpc IsAdmin(IsAdminRequest) returns (IsAdminResponse);
+    rpc CreateVerification(CreateVerificationRequest) returns (CreateVerificationResponse);
     rpc VerifyMail(VerifyMailRequest) returns (VerifyMailResponse);
 }
 
@@ -36,6 +37,14 @@ message IsAdminRequest {
 
 message IsAdminResponse {
     bool is_admin = 1;
+}
+
+message CreateVerificationRequest {
+    string email = 1;
+}
+
+message CreateVerificationResponse {
+    bool success = 1;
 }
 
 message VerifyMailRequest {

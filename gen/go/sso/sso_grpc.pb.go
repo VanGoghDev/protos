@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Auth_Register_FullMethodName   = "/auth.Auth/Register"
-	Auth_Login_FullMethodName      = "/auth.Auth/Login"
-	Auth_IsAdmin_FullMethodName    = "/auth.Auth/IsAdmin"
-	Auth_VerifyMail_FullMethodName = "/auth.Auth/VerifyMail"
+	Auth_Register_FullMethodName           = "/auth.Auth/Register"
+	Auth_Login_FullMethodName              = "/auth.Auth/Login"
+	Auth_IsAdmin_FullMethodName            = "/auth.Auth/IsAdmin"
+	Auth_CreateVerification_FullMethodName = "/auth.Auth/CreateVerification"
+	Auth_VerifyMail_FullMethodName         = "/auth.Auth/VerifyMail"
 )
 
 // AuthClient is the client API for Auth service.
@@ -32,6 +33,7 @@ type AuthClient interface {
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	IsAdmin(ctx context.Context, in *IsAdminRequest, opts ...grpc.CallOption) (*IsAdminResponse, error)
+	CreateVerification(ctx context.Context, in *CreateVerificationRequest, opts ...grpc.CallOption) (*CreateVerificationResponse, error)
 	VerifyMail(ctx context.Context, in *VerifyMailRequest, opts ...grpc.CallOption) (*VerifyMailResponse, error)
 }
 
@@ -70,6 +72,15 @@ func (c *authClient) IsAdmin(ctx context.Context, in *IsAdminRequest, opts ...gr
 	return out, nil
 }
 
+func (c *authClient) CreateVerification(ctx context.Context, in *CreateVerificationRequest, opts ...grpc.CallOption) (*CreateVerificationResponse, error) {
+	out := new(CreateVerificationResponse)
+	err := c.cc.Invoke(ctx, Auth_CreateVerification_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *authClient) VerifyMail(ctx context.Context, in *VerifyMailRequest, opts ...grpc.CallOption) (*VerifyMailResponse, error) {
 	out := new(VerifyMailResponse)
 	err := c.cc.Invoke(ctx, Auth_VerifyMail_FullMethodName, in, out, opts...)
@@ -86,6 +97,7 @@ type AuthServer interface {
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	IsAdmin(context.Context, *IsAdminRequest) (*IsAdminResponse, error)
+	CreateVerification(context.Context, *CreateVerificationRequest) (*CreateVerificationResponse, error)
 	VerifyMail(context.Context, *VerifyMailRequest) (*VerifyMailResponse, error)
 	mustEmbedUnimplementedAuthServer()
 }
@@ -102,6 +114,9 @@ func (UnimplementedAuthServer) Login(context.Context, *LoginRequest) (*LoginResp
 }
 func (UnimplementedAuthServer) IsAdmin(context.Context, *IsAdminRequest) (*IsAdminResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsAdmin not implemented")
+}
+func (UnimplementedAuthServer) CreateVerification(context.Context, *CreateVerificationRequest) (*CreateVerificationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateVerification not implemented")
 }
 func (UnimplementedAuthServer) VerifyMail(context.Context, *VerifyMailRequest) (*VerifyMailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyMail not implemented")
@@ -173,6 +188,24 @@ func _Auth_IsAdmin_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Auth_CreateVerification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateVerificationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServer).CreateVerification(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Auth_CreateVerification_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServer).CreateVerification(ctx, req.(*CreateVerificationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Auth_VerifyMail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(VerifyMailRequest)
 	if err := dec(in); err != nil {
@@ -209,6 +242,10 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "IsAdmin",
 			Handler:    _Auth_IsAdmin_Handler,
+		},
+		{
+			MethodName: "CreateVerification",
+			Handler:    _Auth_CreateVerification_Handler,
 		},
 		{
 			MethodName: "VerifyMail",
