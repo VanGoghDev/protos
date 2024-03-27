@@ -11,6 +11,22 @@ service Auth {
     rpc CreateVerification(CreateVerificationRequest) returns (CreateVerificationResponse);
     rpc VerifyMail(VerifyMailRequest) returns (VerifyMailResponse);
     rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
+    rpc SaveApp(SaveAppRequest) returns (SaveAppResponse);
+    rpc DeleteApp(DeleteAppRequest) returns (DeleteAppResponse);
+}
+
+service Permissions {
+    rpc CreatePermission(CreatePermissionRequest) returns (CreatePermissionResponse);
+    rpc UpdatePermission(UpdatePermissionRequest) returns (UpdatePermissionResponse);
+    rpc DeletePermission(DeletePermissionRequest) returns (DeletePermissionResponse);
+    rpc Permission(PermissionRequest) returns (PermissionResponse);
+    rpc Permissions(PermissionsRequest) returns (PermissionsResponse);
+    rpc GrantPermissionToUser(GrantPermissionToUserRequest) returns (GrantPermissionToUserResponse);
+    rpc RemovePermissionFromUser(RemovePermissionFromUserRequest) returns (RemovePermissionFromUserResponse);
+}
+
+service UserInfo {
+
 }
 
 message RegisterRequest {
@@ -61,9 +77,92 @@ message VerifyMailResponse {
 message ResetPasswordRequest {
     string email = 1;
     string code = 2;
-    string newPassword = 3;
+    string new_password = 3;
 }
 
 message ResetPasswordResponse {
+    bool success = 1;
+}
+
+message SaveAppRequest {
+    string name = 1;
+    string secret = 2;
+}
+
+message SaveAppResponse {
+    int64 app_id = 1;
+}
+
+message DeleteAppRequest {
+    int64 app_id = 1;
+}
+
+message DeleteAppResponse {
+    bool success = 1;
+}
+
+message PermissionRequest {
+    int64 permission_id = 1;
+    int64 app_id = 2;
+}
+
+message PermissionResponse {
+    Permission permission = 1;
+}
+
+message PermissionsRequest {
+    int64 app_id = 1;
+}
+
+message PermissionsResponse {
+    repeated Permission permissions = 1;
+}
+
+message Permission {
+    int64 id = 1;
+    int64 app_id = 2;
+    string name = 3;
+}
+
+message CreatePermissionRequest {
+    string name = 1;
+    int32 app_id = 2;
+}
+
+message CreatePermissionResponse {
+    int64 permission_id = 1;
+}
+
+message UpdatePermissionRequest {
+    string name = 1;
+}
+
+message UpdatePermissionResponse {
+    int64 id = 1;
+}
+
+message DeletePermissionRequest {
+    int64 permission_id = 1;
+}
+
+message DeletePermissionResponse {
+    bool success = 1;
+}
+
+message GrantPermissionToUserRequest {
+    int64 user_id = 1;
+    int64 permission_id = 2;
+}
+
+message GrantPermissionToUserResponse {
+    bool success = 1;
+}
+
+message RemovePermissionFromUserRequest {
+    int64 user_id = 1;
+    int64 permission_id = 2;
+}
+
+message RemovePermissionFromUserResponse {
     bool success = 1;
 }
